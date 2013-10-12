@@ -1,0 +1,6 @@
+{
+    "name": "tboothman/utorrent-api",
+    "autoload": {
+        "psr-0": {"uTorrent\\": ""}
+    }
+}
