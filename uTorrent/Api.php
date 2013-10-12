@@ -1,6 +1,6 @@
 <?php
 
-namespace \uTorrent;
+namespace uTorrent;
 
 define("UTORRENT_TORRENT_HASH", 0);
 define("UTORRENT_TORRENT_STATUS", 1);
@@ -132,6 +132,15 @@ class Api {
     public function getTorrents() {
         $json = $this->makeRequest("?list=1");
         return $json['torrents'];
+    }
+
+    public function getRSSFilters() {
+        $json = $this->makeRequest("?list=1");
+        $filters = array();
+        foreach ($json['rssfilters'] as $filter) {
+            $filters[] = model\Filter::fromData($filter);
+        }
+        return $filters;
     }
 
     // returns true if WebUI server is online and enabled, false otherwise
