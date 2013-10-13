@@ -154,6 +154,16 @@ class Api {
         return $filters;
     }
 
+    public function setRSSFilter(model\Filter $filter) {
+        $request = array_merge(array('action' => 'filter-update'), $filter->toParams());
+        $this->makeRequest('?'.http_build_query($request));
+    }
+
+    public function addRSSFilter(model\Filter $filter) {
+        $filter->filterId = -1;
+        $this->setRSSFilter($filter);
+    }
+
     // returns true if WebUI server is online and enabled, false otherwise
     public function is_online() {
         return is_array($this->makeRequest("?"));
