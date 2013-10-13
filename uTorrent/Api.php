@@ -42,7 +42,8 @@ class Api {
     public $user;
     public $pass;
 
-    public $token;
+    protected $token;
+    protected $guid;
 
     // constructor
     function __construct($host = "", $port = "", $user = "", $pass = "") {
@@ -51,7 +52,7 @@ class Api {
         $this->user = $user;
         $this->pass = $pass;
 
-        if (!$this->getToken($this->token)) {
+        if (!$this->getToken()) {
             //handle error here, don't know how to best do this yet
             die('could not get token');
         }
@@ -59,18 +60,14 @@ class Api {
 
     // performs request
     private function makeRequest($request, $decode = true, $options = array()) {
-        if (!empty($this->token)) {
-            // Check if we have a ?
-            if (substr($request, 0, 1) == '?')
-                $request = preg_replace('/^\?/', '?token='.$this->token . '&', $request);
-        }
+        $request = preg_replace('/^\?/', '?token='.$this->token . '&', $request);
 
         $ch = curl_init();
-
         curl_setopt_array($ch, $options);
         curl_setopt($ch, CURLOPT_URL, sprintf(self::$base, $this->host, $this->port, $request));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERPWD, $this->user.":".$this->pass);
+        curl_setopt($ch, CURLOPT_COOKIE, "GUID=".$this->guid);
 
         $req = curl_exec($ch);
         curl_close($ch);
@@ -83,12 +80,26 @@ class Api {
         return $glue.implode($glue, is_array($param) ? $param : array($param));
     }
 
-    // gets token, returns true on success, token is stored in $token by-ref argument
-    public function getToken(&$token) {
-        $output = $this->makeRequest('token.html', false);
+    // gets token, returns true on success
+    private function getToken() {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, sprintf(self::$base, $this->host, $this->port, 'token.html'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->user.":".$this->pass);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+
+        $output = curl_exec($ch);
+        $info = curl_getinfo($ch);
+        curl_close($ch);
+
+        $headers = substr($output, 0, $info['header_size']);
+
+        if (preg_match("@Set-Cookie: GUID=([^;]+);@i", $headers, $matches)) {
+            $this->guid = $matches[1];
+        }
 
         if (preg_match('/<div id=\'token\'.+>(.*)<\/div>/', $output, $m)) {
-            $token = $m[1];
+            $this->token = $m[1];
             return true;
         }
         return false;
