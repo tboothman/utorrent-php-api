@@ -25,17 +25,21 @@ class Filter {
 
     public $filterId;
     /**
+     * Filter matches original name instead of decoded name
+     * @var bool
+     */
+    public $origname;
+    /**
      * Give download highest priority
      * @var bool
      */
     public $prio;
     public $smartEpFilter;
-    /**
-     * Filter matches original name instead of decoded name
-     * @var bool
-     */
     public $addStopped;
-    public $origname;
+    /**
+     * Name/label of the filter
+     * @var string
+     */
     public $name;
     public $filter;
     public $notFilter;
@@ -45,6 +49,11 @@ class Filter {
      */
     public $saveIn;
     public $feedId;
+    /**
+     * Quality filter. See QUALITY_ constants
+     * @var int
+     */
+    public $quality;
     public $label;
 
     /*
