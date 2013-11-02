@@ -156,12 +156,23 @@ class Api {
 
     public function setRSSFilter(model\Filter $filter) {
         $request = array_merge(array('action' => 'filter-update'), $filter->toParams());
-        $this->makeRequest('?'.http_build_query($request));
+        return $this->makeRequest('?'.http_build_query($request));
     }
 
+    /**
+     * Add a new RSS filter
+     * Requires a utorrent > 2.2.1 (not sure which version exactly)
+     * @param \uTorrent\model\Filter $filter
+     * @return int ID of the new filter
+     */
     public function addRSSFilter(model\Filter $filter) {
         $filter->filterId = -1;
-        $this->setRSSFilter($filter);
+        $resp = $this->setRSSFilter($filter);
+        if (!empty($resp['filter_ident'])) {
+            return $resp['filter_ident'];
+        } else {
+            return 0;
+        }
     }
 
     // returns true if WebUI server is online and enabled, false otherwise

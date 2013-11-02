@@ -54,6 +54,10 @@ class Filter {
      * @var int
      */
     public $quality;
+    /**
+     * The label a created torrent will get
+     * @var string
+     */
     public $label;
 
     /*
