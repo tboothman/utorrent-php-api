@@ -145,6 +145,10 @@ class Api {
         return $json['torrents'];
     }
 
+    /**
+     * Get all the RSS favourites/filters
+     * @return model\Filter[]
+     */
     public function getRSSFilters() {
         $json = $this->makeRequest("?list=1");
         $filters = array();
@@ -154,6 +158,10 @@ class Api {
         return $filters;
     }
 
+    /**
+     * Update an RSS filter as retrieved from getRSSFilters
+     * @param \uTorrent\model\Filter $filter
+     */
     public function setRSSFilter(model\Filter $filter) {
         $request = array_merge(array('action' => 'filter-update'), $filter->toParams());
         return $this->makeRequest('?'.http_build_query($request));

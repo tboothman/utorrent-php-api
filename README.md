@@ -5,6 +5,7 @@ This library lets you control uTorrent using PHP.
 * List Torrents
 * Add Torrents
 * Start / Stop / Pause torrents
+* Add / edit RSS favourites
 
 How?
 ----
