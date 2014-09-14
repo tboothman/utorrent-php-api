@@ -202,7 +202,7 @@ class Api {
     // add a file to the list
     public function torrentAdd($filename, &$estring = false) {
         $split = explode(":", $filename, 2);
-        if (count($split) > 1 && (stristr("|http|https|file|", "|".$split[0]."|") !== false)) {
+        if (count($split) > 1 && (stristr("|http|https|file|magnet|", "|".$split[0]."|") !== false)) {
             $this->makeRequest("?action=add-url&s=".urlencode($filename), false);
         }
         elseif (file_exists($filename)) {
